@@ -1,0 +1,15 @@
+# This is a sample file for the input to PolymerCG_Bonded.py
+# The information of only one monomer is reqiured, the information of other monomers will be generated automatically
+# The format is CG_Bead_ID Atom_ID Atom_Element Atom_Type Atom_Mass Backbone(b)/SideChain(s)
+
+Atoms_per_monomer 6
+Atoms_per_molecule 38
+Atoms_Bead1 6
+
+CG_Bead_ID Atom_ID Atom_Element Atom_Type Atom_Mass backbone(b)/SideChain(s)
+1	8	C	1	12	b
+1	9	C	1	12	b
+1	10	H	3	1	b
+1	11	H	3	1	b
+1	12	H	3	1	b
+1	13	H	3	1	b

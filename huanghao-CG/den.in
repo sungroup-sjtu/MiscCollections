@@ -1,0 +1,84 @@
+
+units          real
+atom_style     full
+boundary       p p p
+pair_style     lj/cut     20.0000
+pair_modify    tail no
+special_bonds  lj 0.0 0.0 1.0
+pair_modify    mix arithmetic
+bond_style     class2
+angle_style    class2
+dihedral_style opls
+improper_style none
+
+read_data      PEO-15.data
+
+pair_coeff     1   1    0.450   4.325  
+pair_coeff     2   2    0.514   4.147 
+
+thermo_style   multi
+thermo         100
+min_style      cg
+minimize       1.0e-4 1.0e-6 5000 1000
+
+compute        Ei all inter all
+variable       T equal temp
+variable       P equal press
+variable       E equal epair
+variable       den equal density
+
+reset_timestep 0
+timestep       1
+fix            1 all npt temp 363 800 100.0 iso 1 1 1000
+fix            2 all ave/time 5000 40 200000 v_T v_P v_E v_den file increaseT
+velocity       all create 363 1166140691 mom yes rot yes dist gaussian
+thermo         1000
+thermo_style   custom step temp press pe v_E v_P v_T 
+run            400000
+unfix          1
+unfix          2
+write_data     increaseT.data
+
+reset_timestep 0
+timestep       5
+fix            1 all nvt temp 800 800 500.0
+fix            2 all ave/time 5000 40 200000 v_T v_P v_E v_den file 800K
+thermo         1000
+thermo_style   custom step temp press pe v_E v_P v_T 
+run            1000000
+unfix          1
+unfix          2
+write_data     800K.data
+
+reset_timestep 0
+timestep       5
+fix            1 all npt temp 800 363 500.0 iso 1 1 5000
+fix            2 all ave/time 5000 40 200000 v_T v_P v_E v_den file decreaseT
+thermo         1000
+thermo_style   custom step temp press pe v_E v_P v_T 
+run            2000000
+unfix          1
+unfix          2
+write_data     800K.data
+
+reset_timestep 0
+timestep       5
+fix            1 all npt temp 363 363 500.0 iso 1 1 5000
+fix            2 all ave/time 5000 40 200000 v_T v_P v_E v_den file equ
+thermo         1000
+thermo_style   custom step temp press pe v_E v_P v_T 
+run            2000000
+unfix          1
+unfix          2
+write_data     equ.data
+
+reset_timestep 0
+timestep       5
+fix            1 all npt temp 363 363 500.0 iso 1 1 5000
+fix            2 all ave/time 5000 40 200000 v_T v_P v_E v_den file den
+thermo         1000
+thermo_style   custom step temp press pe v_E v_P v_T
+dump           1 all custom 1000 den.atom id type xu yu zu
+dump_modify    1 sort id
+run            2000000
+write_data     den.data

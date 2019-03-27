@@ -1,0 +1,31 @@
+units          real
+atom_style     full
+boundary       p p p
+pair_style     lj/cut     20.0000
+pair_modify    tail no
+special_bonds  lj 0.0 0.0 1.0
+pair_modify    mix arithmetic
+bond_style     class2
+angle_style    class2
+dihedral_style opls
+improper_style none
+
+read_data      PPE.data
+
+pair_coeff     1   1    0.442   4.331  
+pair_coeff     2   2    0.784   5.743
+
+reset_timestep 0
+compute        Ei all inter all
+variable       T equal temp
+variable       P equal press
+variable       E equal epair
+variable       den equal density
+variable       CED equal sqrt(-c_Ei[1]*6948/vol)
+
+timestep       5
+fix            1 all npt temp 298 298 500.0 iso 1.0 1.0 5000.0
+fix            2 all ave/time 5000 40 200000 v_T v_P v_E v_den v_CED file CED
+thermo         1000
+thermo_style   custom step temp press pe v_T v_P v_E 
+rerun          den.atom dump x y z box yes 

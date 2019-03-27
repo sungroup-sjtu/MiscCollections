@@ -1,0 +1,42 @@
+integrator      = sd
+dt              = 0.001 ; ps
+nsteps          = 500000
+
+nstxout         = 0
+nstvout         = 0
+nstfout         = 0
+nstxtcout       = 1000
+xtc-grps        = System
+
+rlist           = 1.2
+coulombtype     = PME
+rcoulomb        = 1.2
+rvdw            = 1.2
+DispCorr        = EnerPres
+
+; Berendsen temperature coupling is on in two groups
+Tcoupl          = v-rescale
+tc_grps         = System
+tau_t           = 0.1
+ref_t           = 298
+
+; Pressure coupling is on
+Pcoupl          = no ;parrinello-rahman
+pcoupltype      = isotropic
+tau_p           = 0.5; 2
+compressibility = 4.5e-5
+ref_p           = 1.0
+
+; Generate velocites is on at 298 K.
+gen_vel         = yes
+gen_temp        = 298
+
+; Constrains of Bonds
+constraints     = h-bonds
+constraint-algorithm = LINCS
+
+annealing = single
+annealing-npoints = 4
+annealing-time = 0 100 800 900
+annealing-temp = 0 800 800 363
+
